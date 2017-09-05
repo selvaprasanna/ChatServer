@@ -63,3 +63,7 @@ Test Cases:
     => Have not tried
 5. Accessing the DB while client is updating new messages. Do we get the latest data?
     => Have not tried. 
+    
+References:
+1. https://flask-restful.readthedocs.io/en/latest/
+2. https://dev.mysql.com/doc/connector-python/en/ 
