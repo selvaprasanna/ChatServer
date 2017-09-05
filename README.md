@@ -3,6 +3,8 @@
 Instructions to Run Chat Server: 
 1. Install MySQL Server. Ensure the Server is running in localhost
 2. The settings can be changed in ChatServer/config.py
+3. Install Required packages:
+    >> pip install -r requirements.txt
 3. Run Chat Server via command line:
     >> python ChatServer.py
 
