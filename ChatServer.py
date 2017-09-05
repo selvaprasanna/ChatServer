@@ -1,9 +1,11 @@
-import json
+# Chat Server: Implemented via Flask
+
+from config import HOST, CHAT_PORT
 from flask import Flask, render_template, request
 from flask_restful import Resource, Api
-import time
 import dbconnection
-from config import HOST, CHAT_PORT
+import json
+import time
 
 app = Flask(__name__)
 api = Api(app)
@@ -11,6 +13,10 @@ api = Api(app)
 class Message(Resource):
     @staticmethod
     def post():
+        """
+        This post method is called when below API is hit.
+        API: curl -X POST -H "Content-Type: application/json" --data '{"user":"x", "text":"y"}' http://localhost:8081/message
+        """
         try:
             data = json.loads(request.data)
             current_timestamp = time.time()
@@ -22,11 +28,19 @@ class Message(Resource):
 class Users(Resource):
     @staticmethod
     def get():
+        """
+        This get method is called when below API is hit.
+        API: curl -H "Content-Type: application/json" http://localhost:8081/users
+        """
         return dbconnection.get_unique_users()
 
 class Messages(Resource):
     @staticmethod
     def get():
+        """
+        This get method is called when below API is hit.
+        API: curl -H "Content-Type: application/json" http://localhost:8081/messages
+        """
         return dbconnection.get_latest_records(count_of_records=100)
 
 api.add_resource(Message, '/message')
@@ -35,6 +49,9 @@ api.add_resource(Messages, '/messages')
 
 @app.route('/')
 def index():
+    """
+    Render the HTML page when navigated to http://localhost:8081
+    """
     return render_template("index.html")
 
 if __name__ == "__main__":

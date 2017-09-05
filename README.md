@@ -25,4 +25,39 @@ Metrics to Monitor:
 7. User Satisfaction
 
 Potential Improvements:
-1. What will happen when we access the MySQL when someone is updating it? Do we get the latest data? Not sure. Something to look into. 
+1. What will happen when we access the MySQL when someone is updating it? Do we get the latest data? Not sure. Something to look into.
+2. More specific Error Responses. Currently we have only one error response. {"error": True}
+
+Implementation Details:
+1. Used Flask and Flask_Restful Packages to run the Chat Server
+    a. 404 are automatically handled. 
+2. The messages are stored in MYSQL Database
+    a. MySQL query handles getting the unique users and latest 100 messages
+    
+Test Cases:
+1. Bad API Requests that is not supported. For e.g., http://localhost:8081/userssssss
+    => Return 404. Verified. 
+2. API for http://localhost:8081/message:
+    a. Send empty text: Verified. 
+        => No Error. This is valid. 
+    b. No "text" attribute: Verified. Get Error 
+        => Response: {"error": True}
+    c. Lot of text: mySQL TEXT can take 65,535 characters. If the message value exceeds this, we get error response.
+        => Response: {"error": True}
+    d. XSS Attack from the messages:
+        => The strings need to be encoded before the server can consume them. Fortunately, Flask_Restful already handles this intrinsically. 
+    e. No MySQL DB created. Verified. 
+        => New DB is created
+    f. MySQL Server Not Running. Did not check this. 
+3. API for http://localhost:8081/users
+    a. No DB Created. Verified. 
+        => Send Error Response: {"error": True}
+4. API for http://localhost:8081/messages:
+    a. What is there are no message in the database
+        => Didn't try. My code would not run into such scenario. But Ideally would return a empty dict.  
+    b. What if there are less than 100 messages. But we requested the latest 100. Verified.  
+        => All the messaged would be returned in a dict. 
+4. Too many clients connecting at the same time.
+    => Have not tried
+5. Accessing the DB while client is updating new messages. Do we get the latest data?
+    => Have not tried. 

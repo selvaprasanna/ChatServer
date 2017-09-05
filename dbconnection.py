@@ -1,7 +1,8 @@
-import mysql.connector
-from mysql.connector import errorcode
-from config import HOST, MYSQL_PORT, USER, PASSWORD
+# dbconnection.py: Connection and utilities related to mySQL
 
+from config import HOST, MYSQL_PORT, USER, PASSWORD, DB_NAME, TABLE_NAME
+from mysql.connector import errorcode
+import mysql.connector
 
 def create_database(cnx=None):
     if cnx is None:
@@ -9,10 +10,10 @@ def create_database(cnx=None):
 
     cursor = cnx.cursor()
     # Create the Database --- ChatServerDB
-    cursor.execute("CREATE DATABASE ChatServerDB DEFAULT CHARACTER SET 'utf8';")
-    cnx.database = "ChatServerDB"
+    cursor.execute("CREATE DATABASE %s DEFAULT CHARACTER SET 'utf8';" % DB_NAME)
+    cnx.database = DB_NAME
     # Create the Table --- chat_table
-    cursor.execute("CREATE TABLE chat_table (timestamp VARCHAR(25), user VARCHAR(100), message TEXT);")
+    cursor.execute("CREATE TABLE %s (timestamp VARCHAR(25), user VARCHAR(100), message TEXT);" % TABLE_NAME)
 
 def add_chat_message_to_db(timestamp, user, message):
     cnx = connect_to_mysql()
@@ -34,7 +35,7 @@ def add_chat_message_to_db(timestamp, user, message):
 def get_latest_records(count_of_records=100):
     cnx = connect_to_mysql()
     try:
-        cnx.database = "ChatServerDB"
+        cnx.database = DB_NAME
     except:
         print "No database found in MySQL"
         return {"error": True}
@@ -57,7 +58,7 @@ def get_latest_records(count_of_records=100):
 def get_unique_users():
     cnx = connect_to_mysql()
     try:
-        cnx.database = "ChatServerDB"
+        cnx.database = DB_NAME
     except:
         print "No database found in MySQL"
         return {"error": True}
